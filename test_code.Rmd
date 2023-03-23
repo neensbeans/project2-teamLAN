@@ -1,0 +1,156 @@
+---
+title: "Test Code"
+author: "Ashley"
+date: "2023-03-21"
+output: html_document
+---
+
+```{r}
+# https://rpubs.com/spalladino14/653239
+# https://tensorflow.rstudio.com/tutorials/keras/classification
+
+library(tidyverse)
+library(keras)
+library(tensorflow)
+library(reticulate)
+library(magick)
+
+library(readbitmap)
+library(rlang)
+library(imager)
+library(car)
+```
+
+```{r}
+install_tensorflow(extra_packages="pillow")
+install_keras()
+```
+
+```{r}
+# this is the in set dataset for keras used in one of the tutorials, I was looking at it to see how the data was structured
+fashion_mnist <- dataset_fashion_mnist()
+```
+
+
+```{r}
+folderMD<-("/Users/ashleykim/Documents/Y4 2022-2023/Spring 2023/DS 4002/Project 2/dataset/MildDemented")
+filesMD <- list.files(path = folderMD, pattern = "*.jpg", full.names=TRUE)
+imagesMD<-lapply(filesMD, load.image)
+
+folderModD<-("/Users/ashleykim/Documents/Y4 2022-2023/Spring 2023/DS 4002/Project 2/dataset/ModerateDemented")
+filesModD <- list.files(path = folderModD, pattern = "*.jpg", full.names=TRUE)
+imagesModD<-lapply(filesModD, load.image)
+
+folderND<-("/Users/ashleykim/Documents/Y4 2022-2023/Spring 2023/DS 4002/Project 2/dataset/NonDemented")
+filesND <- list.files(path = folderND, pattern = "*.jpg", full.names=TRUE)
+imagesND<-lapply(filesND, load.image)
+
+folderVMD<-("/Users/ashleykim/Documents/Y4 2022-2023/Spring 2023/DS 4002/Project 2/dataset/VeryMildDemented")
+filesVMD <- list.files(path = folderVMD, pattern = "*.jpg", full.names=TRUE)
+imagesVMD<-lapply(filesVMD, load.image)
+
+im<-load.image("/Users/ashleykim/Documents/Y4 2022-2023/Spring 2023/DS 4002/Project 2/dataset/MildDemented/mildDem396.jpg")
+plot(im)
+```
+
+```{r}
+#preprocessing, code doesn't work here
+library(tidyr)
+library(ggplot2)
+
+image_1 <- as.data.frame(train_images[1, , ])
+colnames(image_1) <- seq_len(ncol(image_1))
+image_1$y <- seq_len(nrow(image_1))
+image_1 <- gather(image_1, "x", "value", -y)
+image_1$x <- as.integer(image_1$x)
+
+ggplot(image_1, aes(x = x, y = y, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "black", na.value = NA) +
+  scale_y_reverse() +
+  theme_minimal() +
+  theme(panel.grid = element_blank())   +
+  theme(aspect.ratio = 1) +
+  xlab("") +
+  ylab("")
+```
+
+```{r}
+Mild <- list.files("/Users/ashleykim/Documents/Y4 2022-2023/Spring 2023/DS 4002/Project 2/dataset/MildDemented", 
+                       full.names = TRUE)
+MildDF <- data.frame(Mild, 2)
+
+Mod <- list.files("/Users/ashleykim/Documents/Y4 2022-2023/Spring 2023/DS 4002/Project 2/dataset/ModerateDemented", 
+                       full.names = TRUE)
+ModDF <- data.frame(Mod, 3)
+
+VMild <- list.files("/Users/ashleykim/Documents/Y4 2022-2023/Spring 2023/DS 4002/Project 2/dataset/VeryMildDemented", 
+                       full.names = TRUE)
+VMildDF <- data.frame(VMild, 1)
+
+Non <- list.files("/Users/ashleykim/Documents/Y4 2022-2023/Spring 2023/DS 4002/Project 2/dataset/NonDemented", 
+                       full.names = TRUE)
+NonDF <- data.frame(Non, 0)
+FullDF <- c(NonDF, VMildDF, MildDF, ModDF)
+```
+
+```{r}
+set.seed(1989)
+sample <- sample(c(TRUE, FALSE), nrow(NonDF), replace=TRUE, prob=c(0.7,0.3))
+trainNon <- NonDF[sample, ]
+testNon <- NonDF[!sample, ]
+colnames(trainNon)[1] = "file"
+colnames(trainNon)[2] = "num"
+colnames(testNon)[1] = "file"
+colnames(testNon)[2] = "num"
+
+trainVMild <- VMildDF[sample, ]
+testVMild <- VMildDF[!sample, ]
+colnames(trainVMild)[1] = "file"
+colnames(trainVMild)[2] = "num"
+colnames(testVMild)[1] = "file"
+colnames(testVMild)[2] = "num"
+
+trainMild  <- MildDF[sample, ]
+testMild  <- MildDF[!sample, ]
+colnames(trainMild)[1] = "file"
+colnames(trainMild)[2] = "num"
+colnames(testMild)[1] = "file"
+colnames(testMild)[2] = "num"
+
+trainMod  <- ModDF[sample, ]
+testMod  <- ModDF[!sample, ]
+colnames(trainMod)[1] = "file"
+colnames(trainMod)[2] = "num"
+colnames(testMod)[1] = "file"
+colnames(testMod)[2] = "num"
+
+trainData <- rbind(trainNon, trainVMild, trainMild, trainMod)
+testData <- rbind(testNon, testVMild, testMild, testMod)
+
+# Labels
+trainLabels <- as.factor(trainData$num)
+testLabels <- as.factor(testData$num)
+```
+
+```{r}
+model <- keras_model_sequential()
+model %>%
+  layer_flatten(input_shape = c(28, 28)) %>%
+  layer_dense(units = 128, activation = 'relu') %>%
+  layer_dense(units = 10, activation = 'softmax')
+```
+
+```{r}
+model %>% compile(
+  optimizer = 'adam',
+  loss = 'sparse_categorical_crossentropy',
+  metrics = c('accuracy')
+)
+```
+
+```{r}
+# this doesn't work either, but since the previous model code ran, I think it's the way the trainData and trainLabels are set up
+model %>% fit(trainData, trainLabels, epochs = 5, verbose = 2)
+```
+
