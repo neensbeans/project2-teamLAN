@@ -33,5 +33,6 @@ The following packages will need to be installed in order to build the code: ker
 
 ## References
 [TensorFlow for R: Basic Image Classification](https://tensorflow.rstudio.com/tutorials/keras/classification)  
+[CNN Tutorial](https://www.simplilearn.com/tutorials/deep-learning-tutorial/convolutional-neural-network) 
   
 
