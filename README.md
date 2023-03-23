@@ -20,7 +20,7 @@ The following packages will need to be installed in order to build the code: ker
 | moderateDemented | Image | MRI scan presents moderate signs of dementia (the most extreme) |
 
 ### Link to Data
-[Data](https://www.kaggle.com/datasets/shahidzikria/alz-dataset)
+[Data](https://www.kaggle.com/datasets/shahidzikria/alz-dataset) 
 
 ### Notes about Data
 
