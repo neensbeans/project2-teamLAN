@@ -23,7 +23,7 @@ The following packages will need to be installed in order to build the code: ker
 [Data](https://www.kaggle.com/datasets/shahidzikria/alz-dataset) 
 
 ### Notes about Data
-The data is composed of MRI scan images in JPEG format. The code found in the SRC file develops separate datasets to both train and test the convolutional neural network.
+The data is composed of MRI scan images in JPEG format. The code found in the SRC file develops separate datasets to both train and test the convolutional neural network. The images belonging to the dataset categories are assigned a corresponding number label(nonDemented-0, veryMildDemented-1, mildDemented-2, and moderateDemented-3). 
 
 ## Figures 
 
