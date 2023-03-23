@@ -32,7 +32,7 @@ The data is composed of MRI scan images in JPEG format. The code found in the SR
 
 
 ## References
+[TensorFlow Image Classification](https://www.tensorflow.org/tutorials/images/classification)
 [TensorFlow for R: Basic Image Classification](https://tensorflow.rstudio.com/tutorials/keras/classification)  
 [CNN Tutorial](https://www.simplilearn.com/tutorials/deep-learning-tutorial/convolutional-neural-network) 
-  
 
